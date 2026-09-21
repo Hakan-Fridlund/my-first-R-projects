@@ -1,10 +1,13 @@
 """
 Assignment: filter, group, summerize data.  DPLYR flights Tibble (dataframe)
+trying out the nycflights database
 """
+
 pacman::p_load(nycflights13)
 library(nycflights13)
 library(tidyverse)
 
+#exploring the dataframe in several ways
 ?flights
 view(flights) # a couple of useful commands for viewing the datatable
 glimpse(flights)
@@ -39,53 +42,56 @@ b
 c <- flights |> filter(dep_delay >= 60 & (dep_delay - arr_delay > 30))
 c
 
-flights |>             # mutate lägger till kolumner som beräknas av existerande .before = index lägger dom först istället för sist
-  mutate(                  # alternativ   .keep = "used"    sparar bara dom som använts och skapats
+flights |>             # mutate adds columns that is calculated of existing .before = index adds them first instead of last
+  mutate(                  # alternative   .keep = "used"  saves only the used and created
     gain = dep_delay - arr_delay,
     speed = distance / air_time * 60,
     .before = 1
   )
 
-flights |> select(!year:day)  # visar allt utom year till dag
-flights |> select(where(is.character))  # visar alla komumner som är bokstäver
-# hjälpfunktioner till SELECT()  starts_with(), ends_with(), contains() num:range() matches(används med regex)
+flights |> select(!year:day)  # shows all except year til day
+flights |> select(where(is.character))  # shows all columns that is letters
+# helpfunctions to SELECT()  starts_with(), ends_with(), contains() num:range() matches(used with regex)
 # starts_with("abc"): matches names that begin with “abc”, ends_with("xyz"): matches names that end with “xyz”
 # contains("ijk"): matches names that contain “ijk” num_range("x", 1:3): matches x1, x2 and x3.
 
-flights |> select(tail_num = tailnum)  # döper om en variabel med select
-flights |> rename(tail_num = tailnum)  # döper om en variable när man inte använder select
-flights |> relocate(year:dep_time, .after = time_hour) #flyttar variable, om .after eller .before inte används flyttas det först
+flights |> select(tail_num = tailnum)  # renames a variable with select
+flights |> rename(tail_num = tailnum)  # renames a variable not using select
+flights |> relocate(year:dep_time, .after = time_hour) #moves a variable, if .after or .before is not used it will be located first
 
-flights |>           # en pipe som filtrerar på dest, muterar fram speed, väljer variabler och arrangerar desc på speed
+flights |>           # a pipe that filters on dest, mutates speed, chooses variables and arranges desc on speed
   filter(dest == "IAH") |> 
   mutate(speed = distance / air_time * 60) |> 
   select(year:day, dep_time, carrier, flight, speed) |> 
   arrange(desc(speed))
 
-flights |> group_by(month)  #grupperar månader
+flights |> group_by(month)  #groups by month
 
 
-flights |>                      # summarize medelvärdet av dep_delay   na.rm = TRUE ignorerar N/A värden (na remove)
-  group_by(month) |>            # n = n() räknar antalet i varje grupp
+flights |>                      # summarize mean value of dep_delay  na.rm = TRUE ignores N/A values (na remove)
+  group_by(month) |>            # n = n() counts the number in each group
   summarize(
     avg_delay = mean(dep_delay, na.rm = TRUE), 
     n = n()
   )
 
-flights |>              # tar en (n antal) slice av gruppen, max av försenade flyg, flyttar dest till första kolumn
+flights |>              # takes a (n number) slice of the group, max delayed flights, moves dest to first column
   group_by(dest) |>             
-  slice_max(arr_delay, n = 1) |>    # slice_head(n = 1) takes the first row from each group, slice_tail, slice_min, slice_sample(tar en random)
+  slice_max(arr_delay, n = 1) |>    # slice_head(n = 1) takes the first row from each group, slice_tail, slice_min, slice_sample(takes one random)
   relocate(dest)
 
-flights |>       #  .by istället för group_by
+flights |>       #  .by instead of group_by
   summarize(
     delay = mean(dep_delay, na.rm = TRUE), 
     n = n(),
     .by = c(origin, dest)
   )
 
-#Which carrier has the worst average delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? 
-#Why/why not? (Hint: think about flights |> group_by(carrier, dest) |> summarize(n()))
+"""
+ASSIGNMENT:
+Which carrier has the worst average delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? 
+Why/why not? (Hint: think about flights |> group_by(carrier, dest) |> summarize(n()))
+"""
 
 x <- flights |> 
   summarize(
@@ -93,6 +99,6 @@ x <- flights |>
     n=n(),
     .by = c(carrier, dest)) |> 
   arrange (desc(delay)) |> 
-  filter(n>50)               # tar bort dom PAIRS av destinationer/carriers som flugits färre än 50 ggr
+  filter(n>50)               # removes the PAIRS of destinations/carriers that was flown less than 50 times
 x
 

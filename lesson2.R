@@ -1,7 +1,6 @@
-"""
-Assignment: filter, group, summerize data.  DPLYR flights Tibble (dataframe)
-trying out the nycflights database
-"""
+# Assignment: filter, group, summerize data.  DPLYR flights Tibble (dataframe)
+# trying out the nycflights database
+
 
 pacman::p_load(nycflights13)
 library(nycflights13)
@@ -20,14 +19,14 @@ flights |> distinct()    #filter away duplicates
 flights |> distinct(origin, dest)    # find unique origin and destination PAIRS
 flights |> count(origin, dest, sort = TRUE)   #counts unique origin and destination PAIRS instead and sorts descending
 
-"""
-#Assignment. Filter: 1 Had an arrival delay of two or more hours  
-2  Flew to Houston (IAH or HOU) 
-3 Were operated by United, American, or Delta
-#4 Departed in summer (July, August, and September) 
-5 Arrived more than two hours late but didn’t leave late 
-6 Were delayed by at least an hour, but made up over 30 minutes in flight
-"""
+
+# Assignment. Filter: 1 Had an arrival delay of two or more hours  
+# 2  Flew to Houston (IAH or HOU) 
+# 3 Were operated by United, American, or Delta
+# 4 Departed in summer (July, August, and September) 
+# 5 Arrived more than two hours late but didn’t leave late 
+# 6 Were delayed by at least an hour, but made up over 30 minutes in flight
+
 
 x <- flights |> filter(arr_delay >= 120)
 x
@@ -87,11 +86,10 @@ flights |>       #  .by instead of group_by
     .by = c(origin, dest)
   )
 
-"""
-ASSIGNMENT:
-Which carrier has the worst average delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? 
-Why/why not? (Hint: think about flights |> group_by(carrier, dest) |> summarize(n()))
-"""
+# ASSIGNMENT:
+# Which carrier has the worst average delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? 
+# Why/why not? (Hint: think about flights |> group_by(carrier, dest) |> summarize(n()))
+
 
 x <- flights |> 
   summarize(

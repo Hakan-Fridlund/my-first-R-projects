@@ -1,6 +1,4 @@
-"""
-Various Lesson assignments, basic variables,vectors, operators
-"""
+#Various Lesson assignments, basic variables,vectors, operators
 
 x <- c(10.4, 5.6, 3.1, 6.4, 21.7)  # create a vector
 assign("x", c(10.4, 5.6, 3.1, 6.4, 21.7)) # create a vector with assign function

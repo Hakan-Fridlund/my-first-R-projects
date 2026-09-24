@@ -1,6 +1,5 @@
-"""
-GGPLOT assignment, penguins database
-"""
+#GGPLOT assignment, penguins database
+
 
 library(tidyverse)
 library(palmerpenguins)
@@ -32,10 +31,10 @@ ggplot(    # version 2 has color = species locally in scatterpoint
   ) +
   scale_color_colorblind()
 
-"""
-Make a scatterplot of bill_depth_mm vs. bill_length_mm. That is, make a scatterplot with bill_depth_mm on the y-axis and bill_length_mm on the x-axis. 
-Describe the relationship between these two variables.
-"""
+
+# Make a scatterplot of bill_depth_mm vs. bill_length_mm. That is, make a scatterplot with bill_depth_mm on the y-axis and bill_length_mm on the x-axis. 
+# Describe the relationship between these two variables.
+
 
 ggplot(
   data = penguins,
@@ -44,9 +43,8 @@ ggplot(
   geom_point(mapping = aes(color = species, shape = species, na.rm = TRUE)) +
   scale_color_colorblind()
 
-"""
-What happens if you make a scatterplot of species vs. bill_depth_mm? What might be a better choice of geom?: boxplot
-"""
+
+# What happens if you make a scatterplot of species vs. bill_depth_mm? What might be a better choice of geom?: boxplot
 
 ggplot(
   data = penguins,
@@ -59,7 +57,9 @@ ggplot(
   ) +
   scale_color_colorblind() 
 
+
 # better syntax för plotting with pipes and data first, then mapping with aes
+
 penguins |> 
   ggplot(aes(x = flipper_length_mm, y = body_mass_g)) + 
   geom_point()
@@ -73,17 +73,17 @@ ggplot(penguins, aes(x = body_mass_g)) +     # histogram
 ggplot(penguins, aes(x = body_mass_g)) +    # density plot (works like a histogram but line
   geom_density()
 
-"""
-Make a bar plot of species of penguins, where you assign species to the y aesthetic. How is this plot different? sideways
-"""
+
+
+# Make a bar plot of species of penguins, where you assign species to the y aesthetic. How is this plot different? sideways
+
 penguins |> 
   ggplot(aes(y = species)) +
   geom_bar()
 
-"""
-Make a histogram of the carat variable in the diamonds dataset that is available when you load the tidyverse package. 
-Experiment with different binwidths. What binwidth reveals the most interesting patterns?
-"""
+
+# Make a histogram of the carat variable in the diamonds dataset that is available when you load the tidyverse package. 
+# Experiment with different binwidths. What binwidth reveals the most interesting patterns?
 
 ?diamonds
 view(diamonds)
@@ -102,10 +102,9 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +  # facet_wrap cr
   geom_point(aes(color = species, shape = species)) +
   facet_wrap(~island)
 
-"""
-Make a scatterplot of bill_depth_mm vs. bill_length_mm and color the points by species. 
-What does adding coloring by species reveal about the relationship between these two variables? What about faceting by species?
-"""
+
+# Make a scatterplot of bill_depth_mm vs. bill_length_mm and color the points by species. 
+# What does adding coloring by species reveal about the relationship between these two variables? What about faceting by species?
 
 penguins |> 
   ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) +

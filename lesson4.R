@@ -1,8 +1,7 @@
-"""
-Assignments
-EDA for billboard database, analyzes top 100 hits on billboard chart.
-focusing on tidyr(tidyverse) functions to reshape the database structure
-"""
+#Assignments
+#EDA for billboard database, analyzes top 100 hits on billboard chart.
+#focusing on tidyr(tidyverse) functions to reshape the database structure
+
 
 library(tidyverse)
 ?billboard
@@ -10,15 +9,15 @@ library(tidyverse)
 bb <- billboard |>              #pivot_longer redoes the columns that starts with "wk" into rows
   pivot_longer(
     cols = starts_with("wk"), 
-    names_to = "week",     # namnger den nya kolumnen där de tidigare kolumnerna flyttas till 
-    values_to = "rank",     # namnger den andra nya kolumnen där värdena från wk1, wk2 osv flyttas till
-    values_drop_na = TRUE   # tar bort veckor med NA värde, vissa hits låg inte på top 100 i 72 veckor 
+    names_to = "week",     # names the new column where the earlier columns are moved to 
+    values_to = "rank",     # names the second new column where values from wk1, wk2 et.c. are moved to
+    values_drop_na = TRUE   # remove weeks with NA value, since some hits was not on top 100 for 72 full weeks 
   ) |> 
-  mutate(week = parse_number(week))     # parse_number tar första siffran i en string, det tar alltså bort wk från wk1 osv
+  mutate(week = parse_number(week))     # parse_number takes first number in a string, (removes wk from wk1 -> 1)
 
 view(bb)
 
-bb |>     #plottar billboard låtarna.
+bb |>     #plot billboard songs.
   ggplot(aes(x = week, y = rank, group = track)) + 
   geom_line(alpha = 0.25) + 
   scale_y_reverse()
@@ -33,7 +32,7 @@ df <- tribble(
 
 df |> 
   pivot_longer(
-    cols = bp1:bp2,              #slår ihop 2 kolumner, names_to döper om variabeln till measurements. värdena sparas i ny kolumn: value (values_to)
+    cols = bp1:bp2,              #adds 2 columns together, names_to renames the variable to measurements. the values is saved in a new column: value (values_to)
     names_to = "measurement",
     values_to = "value"
   )
@@ -42,10 +41,10 @@ who2
 
 df <- who2 |> 
   pivot_longer(
-    cols = !(country:year),                          #kolumner som INTE är country eller year, (är formaterade sp_f_014 med _ som separator) 
+    cols = !(country:year),                          #columns that is NOT country or year, (is formatted sp_f_014 with _ as a separator) 
     names_to = c("diagnosis", "gender", "age"), 
-    names_sep = "_",                                #separatorn
-    values_to = "count"                             #flyttar värdena till en kolumn som skapas med namnet count 
+    names_sep = "_",                                #the separator
+    values_to = "count"                             #moves the values to a column that is created with the name count 
   )
 
 household
@@ -60,10 +59,10 @@ household |>
 # pivot wider
 cms_patient_experience
 
-cms_patient_experience |>    #  tar fram unika värden från measure_cd och measure_title
+cms_patient_experience |>    #  takes unique values from measure_cd and measure_title
   distinct(measure_cd, measure_title)
 
-cms_patient_experience |>     #slår ihop alla linjer med samma org-ID och ORG-name till en rad
+cms_patient_experience |>     #adds all lines with same org-ID and ORG-name together to one row
   pivot_wider(
     id_cols = starts_with("org"),
     names_from = measure_cd,
@@ -71,10 +70,12 @@ cms_patient_experience |>     #slår ihop alla linjer med samma org-ID och ORG-n
   )
 
 df |> 
-  distinct(diagnosis) |>    # tar fram unika värden för en pivot wider
+  distinct(diagnosis) |>    # takes unique values for a pivot wider
   pull()
 
-# övning DATA CLEANING
+# ASSIGNMENT 
+# DATA CLEANING
+
 scores <- tibble::tribble(
   ~name,     ~math_2023, ~english_2023, ~math_2024, ~english_2024,
   "Anna",    78,          81,            82,          85,
@@ -82,7 +83,7 @@ scores <- tibble::tribble(
   "Cecilia", 90,          88,            93,          91
 )
 
-#Gör datan long så att du får:en kolumn för år,en kolumn för ämne,en kolumn för poäng
+#Make the data long so you get: one column for year, one for subject and one for score
 longer_scores <- scores |> 
   pivot_longer(
     cols = !name,
@@ -91,7 +92,7 @@ longer_scores <- scores |>
     values_drop_na = TRUE
   )
 
-#Övning 2 — pivot_wider, När du har gjort long-formatet:gör tillbaka till wide-format, men denna gång med år som kolumner och ämnen som rader
+#Assignment 2 — pivot_wider, When made long, remake it into wide-format, this time with year as columns and subject as rows
 longer_scores |> 
   pivot_wider(
     names_from = year,

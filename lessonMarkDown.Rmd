@@ -28,9 +28,9 @@ head(mpg)
 ?mpg
 ```
 
-## Spridningsdiagram
+## Scatter plot
 
-Visar sambandet mellan motorstorlek och bränsleförbrukning på landsväg.
+Shows the relationship between engine size and highway fuel consumption.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy, color = class)) +
@@ -39,60 +39,60 @@ ggplot(mpg, aes(displ, hwy, color = class)) +
               se = FALSE, 
               color = "white") +
   labs(
-    title = "Motorstorlek vs Miles per gallon on Highway ",
-    x = "Motorstorlek (liter)",
+    title = "Motorsize vs Miles per gallon on Highway ",
+    x = "Motorsize (litres)",
     y = "Miles per gallon on Highway"
   ) 
 
 ```
 
-## Låd-diagram
+## Box plot
 
-Visar fördelningen av bränsleförbruking på landsväg vid olika typer av drift.
+Shows the distribution of fuel consumption on country roads for different types of operating modes.
 
 ```{r}
 ggplot(mpg, aes(drv, hwy)) +
   geom_boxplot() +
   scale_x_discrete(
     labels = c(
-      "4" = "4-hjulsdrift",
-      "f" = "Framhjulsdrift",
-      "r" = "Bakhjulsdrift"
+      "4" = "4-wheel drive",
+      "f" = "Front-wheel drive",
+      "r" = "Rear-wheel drive"
     )
   ) +
   labs(
-    title = "Bränsleförbrukning per drivlina",
-    x = "Drivlina",
+    title = "Fuel consumption per drivetrain",
+    x = "Drivetrain",
     y = "Miles per gallon on Highway"
   )
 ```
 
 ## Histogram
 
-Visar fördelningen av bränsleförbrukning.
+Shows the distribution of fuel consumption.
 
 ```{r}
 ggplot(mpg, aes(hwy)) +
   geom_histogram(bins = 20, fill = "steelblue", color = "white") +
   labs(
-    title = "Fördelning av bränsleförbrukning",
-    x = "Bränsleförbrukning (Miles per gallon on Highway)",
-    y = "Antal bilar"
+    title = "Distribution of fuel consumption",
+    x = "Fuel consumption (Miles per gallon on Highway)",
+    y = "Number of cars"
   )
 ```
 
-## Facetterat spridningsdiagram
+## Faceted scatter plot
 
-Visar sambandet mellan motorstorlek och bränsleförbrukning på landsväg uppdelat på klass.
+Shows the relationship between engine size and highway fuel consumption, broken down by class.
 
 ```{r}
 ggplot(mpg, aes(displ, hwy, color=class)) +
   geom_point() +
   facet_wrap(~ class) +
   labs(
-    title = "Motorstorlek vs Highway MPG per bilklass",
-    x = "Motorstorlek i Liter",
-    y = "Bränsleförbrukning på landsväg"
+    title = "Motorsize vs Highway MPG by car class",
+    x = "Motorsize i Litres",
+    y = "Fuel consumption on highway"
   ) +
 theme_minimal()
 

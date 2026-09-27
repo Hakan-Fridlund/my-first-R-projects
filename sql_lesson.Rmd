@@ -1,0 +1,147 @@
+---
+title: "Testing out SQL"
+output: pdf_document
+date: "2026-08-03"
+---
+```{r}
+library(DBI) 
+library(RMariaDB)
+```
+
+```{r include=FALSE}
+pw <- "Billybutt35"
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# A beginners guide to SQL.
+Testing out different functions, using Rmarkdown
+
+
+
+## Connecting SQL i Rmarkdown
+
+This runs the SQL-connection named con in R, Password is a hidden param.
+Not relevant for SQL in itself but needed for connecting to the database in Rmarkdown.
+
+```{r}
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  dbname = "test",
+  host = "localhost",
+  user = "root",
+  password = pw
+)
+```
+## Create a table
+Constraints: **NOT NULL**.the value needs to be not null, **UNIQUE** needs to be unique value
+
+**DEFAULT** sätter ett defaultvärde vid null. 
+**AUTO_INCREMENT** gör att du inte behöver skriva in student_id den räknar själv 1,2,3 o.s.v.
+ON DELETE sätter beteendet vid borttagandet om foreign keys används i andra tabeller.
+**ON DELETE SET NULL** sätter värdet i de andra tabellerna till NULL.
+**ON DELETE CASCADE** tar bort raden även i de andra tabellerna där foreign key används.
+Exempel: FOREIGN KEY (major_id) REFERENCES major(major_id) ON DELETE SET NULL
+
+```{sql connection=con}
+CREATE TABLE student (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL,
+    major VARCHAR(20) DEFAULT "undecided"
+);
+```
+## Describes a table
+```{sql connection=con}
+DESCRIBE student;
+```
+## Add a column 
+Vi lägger till en kolumn average som kan ha värdet **DECIMAL** där vi anger 3 siffror totalt, 2st efter kommatecknet. ex 3.14
+```{sql connection=con}
+ALTER TABLE student ADD average DECIMAL(3,2);
+
+```
+## Removes a column
+```{sql connection=con}
+ALTER TABLE student DROP COLUMN average;
+
+```
+## Insert row to table. 
+In order of columns in table.
+Primary key som valdes i create table måste vara unik.
+```{sql connection=con}
+INSERT INTO student VALUES(1, "Jack", "Sociology");
+
+```
+# Insert row to table ver 2
+Specificera vilka värden du vill skriva in, om något ska utelämnas.
+Första värdet student_id behöver inte skrivas ut då vi använde AUTO_INCREMENT tidigare vid create table.
+Vi utelämnar även major, vilket då bestäms till undecided av DEFAULT vi satte tidigare i CREATE TABLE.
+```{sql connection=con}
+INSERT INTO student(name) VALUES("Kate");
+```
+
+## SELECT information from table
+* Används för att söka på allt. Ersätts t.ex. med name för att returnera alla namn.
+**SELECT DISTINCT** ger unika värden.
+**ORDER BY** name DESC; kan läggas till för att sortera t.ex. namn alfabetiskt, desc för omvänd ordning.
+**LIMIT 2**; returnerar max 2 värden. 
+```{sql connection=con}
+SELECT * 
+FROM student
+WHERE name IN ("Kate", "Jack");
+
+```
+## UPDATE values
+Ändrar alla värden som har ex. Sociology eller social psychology som major till Soc.
+Även SET kan ha flera argument, lägg till efter ett kommatecken. **<>** betyder not equal to
+```{sql connection=con}
+UPDATE student
+SET major = "Soc"
+WHERE major = "Sociology" OR major = "Social psychology" ;
+
+```
+## Delete values
+```{sql connection=con}
+DELETE FROM student
+WHERE student_id = 1;
+
+```
+
+
+## Delete a table
+```{sql connection=con}
+DROP TABLE student;
+
+```
+# Foreign keys
+En kolumn som pekar på en rad i en annan tabell – eller på en rad i samma tabell (självrefererande f k)
+Antingen via FOREIGN KEY (student_id) REFERENCES student(student_id) i **CREATE TABLE**
+eller via **ALTER TABLE** ex:
+ALTER TABLE grades
+ADD CONSTRAINT fk_student
+FOREIGN KEY (student_id) REFERENCES student(student_id);
+
+# Wildcards
+Fungerar som enkla regular expressions. används t.ex. **WHERE name LIKE "xxx";**
+**LIKE** % betyder fler tecken och _ betyder ett tecken. ex: %school% ordet ska ha school i sig. __-10% betyder 2st valfria tecken sedan -10 och valfritt antal tecken efter.
+
+# UNION
+Slå ihop resultat från två SELECT‑frågor till en gemensam lista.Använd **UNION** mellan SELECT-frågorna.
+ 
+# JOIN
+Koppla ihop rader från två tabeller baserat på ett gemensamt värde.
+**JOIN, LEFT JOIN, RIGHT JOIN & FULL OUTER JOIN** join visar bara värden som finns i båda, left join visar i detta exempel allt från employee, right join visar allt från branch:
+SELECT employee.emp_id, branch.branch_name
+FROM employee
+JOIN branch
+ON employee.emp_id = branch.mg_id;
+
+# TRIGGERS
+## Triggers är till för att automatiskt reagera på förändringar i en tabell.
+**Automatisera loggning**, Exempel: Spara gamla värden i en historiktabell när något uppdateras.
+**Validera data**, Kontrollera att en rad uppfyller vissa regler innan den får sparas.
+**Hålla data synkroniserad**, Uppdatera relaterade tabeller när något ändras.
+**Beräkna eller sätta värden automatiskt**, Exempel: sätta updated_at vid varje UPDATE.
+**Förhindra otillåtna ändringar**, Stoppa DELETE eller UPDATE om villkor inte uppfylls.
+

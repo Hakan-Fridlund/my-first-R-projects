@@ -1,11 +1,13 @@
 ---
 title: "Practice visualizing the mpg dataset"
 author: "Håkan Fridlund"
-output: html_document
 date: "2026-08-01"
+output:
+  pdf_document: default
+  html_document: default
 lang: sv
-header-includes:
-  - "<style>body { hyphenate-character: none; hyphens: none; word-break: keep-all; }</style>"
+header-includes: "<style>body { hyphenate-character: none; hyphens: none; word-break:
+  keep-all; }</style>"
 ---
 
 ```{r setup, include=FALSE}
